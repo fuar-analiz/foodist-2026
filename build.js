@@ -320,15 +320,18 @@ const html = `<!doctype html>
   .rate { display: inline-block; white-space: nowrap; font-size: 11.5px; color: var(--ink-3); margin-left: 6px; font-variant-numeric: tabular-nums; }
 
   .tbl-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-  table { border-collapse: collapse; width: 100%; min-width: 1240px; font-size: 13.5px; table-layout: fixed; }
-  th:nth-child(1), td:nth-child(1) { width: 27%; }
-  th:nth-child(2), td:nth-child(2) { width: 8%; }
-  th:nth-child(3), td:nth-child(3) { width: 7%; }
-  th:nth-child(4), td:nth-child(4) { width: 14%; }
-  th:nth-child(5), td:nth-child(5) { width: 12%; }
-  th:nth-child(6), td:nth-child(6) { width: 17%; }
-  th:nth-child(7), td:nth-child(7) { width: 10%; }
-  th:nth-child(8), td:nth-child(8) { width: 5%; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  @media (min-width: 901px) {
+    table { min-width: 1240px; table-layout: fixed; }
+    th:nth-child(1), td:nth-child(1) { width: 27%; }
+    th:nth-child(2), td:nth-child(2) { width: 8%; }
+    th:nth-child(3), td:nth-child(3) { width: 7%; }
+    th:nth-child(4), td:nth-child(4) { width: 14%; }
+    th:nth-child(5), td:nth-child(5) { width: 12%; }
+    th:nth-child(6), td:nth-child(6) { width: 17%; }
+    th:nth-child(7), td:nth-child(7) { width: 10%; }
+    th:nth-child(8), td:nth-child(8) { width: 5%; }
+  }
   th { text-align: left; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); padding: 13px 14px 10px; border-bottom: 2px solid var(--ink-3); position: sticky; top: 0; background: var(--surface); z-index: 2; }
   td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
   tr:last-child td { border-bottom: 0; }
@@ -384,6 +387,7 @@ const html = `<!doctype html>
     tbody td:first-child::before { content: none; }
     .loc-cell { white-space: normal; }
     tbody td { overflow-wrap: anywhere; }
+    table, tbody td, thead th { width: auto; min-width: 0; table-layout: auto; }
     .mail-cell a { word-break: break-all; }
     tbody td a { display: inline-block; padding: 6px 0; min-height: 22px; }
     .mail-cell a { padding: 5px 0; }
