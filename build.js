@@ -237,7 +237,7 @@ const html = `<!doctype html>
     margin: 0; background: var(--bg); color: var(--ink);
     font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
-  .wrap { max-width: 1000px; margin: 0 auto; padding: 48px 24px 80px; }
+  .wrap { max-width: 1340px; margin: 0 auto; padding: 48px 24px 80px; }
   .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; }
   h1 { font-size: clamp(28px, 4.5vw, 42px); line-height: 1.15; font-weight: 800; margin: 0 0 10px; text-wrap: balance; }
   .lede { color: var(--ink-2); max-width: 62ch; margin: 0; }
@@ -287,9 +287,9 @@ const html = `<!doctype html>
   .vcard span { font-size: 13px; color: var(--ink-2); }
   .vcard em { display: block; font-style: normal; font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
   .verify-rows { display: grid; gap: 10px; }
-  .vrow { display: grid; grid-template-columns: 12px 1fr; gap: 10px; align-items: start; font-size: 14.5px; color: var(--ink-2); line-height: 1.55; }
+  .vrow { position: relative; padding-left: 24px; font-size: 14.5px; color: var(--ink-2); line-height: 1.6; }
   .vrow b { color: var(--ink); }
-  .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 7px; background: var(--ink-3); }
+  .dot { position: absolute; left: 0; top: 8px; width: 10px; height: 10px; border-radius: 50%; background: var(--ink-3); }
   .dot.ok { background: var(--good); }
   .dot.mid { background: var(--warn); }
   .bar-fill.s3solid { background: var(--track-2); }
@@ -316,18 +316,30 @@ const html = `<!doctype html>
   .v-badge { display: inline-block; font-size: 11px; font-weight: 700; width: 15px; height: 15px; line-height: 14px; text-align: center; border-radius: 50%; vertical-align: 1px; }
   .v-badge.ok { color: var(--on-good); background: var(--good); }
   .v-badge.mid { color: var(--ink); background: var(--track-2); }
-  .loc-cell { white-space: nowrap; }
-  .rate { font-size: 11.5px; color: var(--ink-3); margin-left: 6px; font-variant-numeric: tabular-nums; }
+  .loc-cell { line-height: 1.4; }
+  .rate { display: inline-block; white-space: nowrap; font-size: 11.5px; color: var(--ink-3); margin-left: 6px; font-variant-numeric: tabular-nums; }
 
   .tbl-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-  table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13.5px; }
-  th { text-align: left; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); padding: 12px 14px 8px; border-bottom: 2px solid var(--line); position: sticky; top: 0; background: var(--surface); }
-  td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+  table { border-collapse: collapse; width: 100%; min-width: 1240px; font-size: 13.5px; table-layout: fixed; }
+  th:nth-child(1), td:nth-child(1) { width: 27%; }
+  th:nth-child(2), td:nth-child(2) { width: 8%; }
+  th:nth-child(3), td:nth-child(3) { width: 7%; }
+  th:nth-child(4), td:nth-child(4) { width: 14%; }
+  th:nth-child(5), td:nth-child(5) { width: 12%; }
+  th:nth-child(6), td:nth-child(6) { width: 17%; }
+  th:nth-child(7), td:nth-child(7) { width: 10%; }
+  th:nth-child(8), td:nth-child(8) { width: 5%; }
+  th { text-align: left; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-2); padding: 13px 14px 10px; border-bottom: 2px solid var(--ink-3); position: sticky; top: 0; background: var(--surface); z-index: 2; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
   tr:last-child td { border-bottom: 0; }
-  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.num { font-variant-numeric: tabular-nums; line-height: 1.45; }
   .rep-badge { font-size: 10.5px; font-weight: 700; color: var(--s1); border: 1px solid currentColor; border-radius: 999px; padding: 0 6px; white-space: nowrap; }
-  td a { color: var(--accent); word-break: break-all; }
-  .cat-cell { color: var(--ink-2); font-size: 12.5px; }
+  td a { color: var(--accent); overflow-wrap: anywhere; }
+  .cat-cell { color: var(--ink-2); font-size: 12.5px; line-height: 1.45; }
+  tbody tr:nth-child(even) { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+  tbody tr:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  td:first-child { font-weight: 650; color: var(--ink); line-height: 1.42; letter-spacing: -0.005em; }
+  .unvan-ek { display: block; font-weight: 400; font-size: 11.5px; color: var(--ink-3); letter-spacing: .01em; margin-top: 1px; }
 
   footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
   footer p { margin: 4px 0; max-width: 80ch; }
@@ -371,6 +383,7 @@ const html = `<!doctype html>
     }
     tbody td:first-child::before { content: none; }
     .loc-cell { white-space: normal; }
+    tbody td { overflow-wrap: anywhere; }
     .mail-cell a { word-break: break-all; }
     tbody td a { display: inline-block; padding: 6px 0; min-height: 22px; }
     .mail-cell a { padding: 5px 0; }
@@ -536,6 +549,20 @@ const copyBtn = document.getElementById('copy');
 let mode = 'all';
 let visible = [];
 const norm = s => (s || '').toLocaleLowerCase('tr');
+// Unvanların yarısı her satırda tekrar eden hukuki ek ("GIDA SAN. VE TİC. LTD. ŞTİ.").
+// Asıl adı vurgulayıp eki soluk ve küçük gösteriyoruz — tarama hızını belirgin artırıyor.
+const EK = /\\s(G[İI]DA|SAN\\.?|SANAY[İI]|T[İI]C\\.?|T[İI]CARET|LTD\\.?|ŞT[İI]\\.?|A\\.?Ş\\.?|ANON[İI]M|L[İI]M[İI]TED|Ş[İI]RKET[İI]|[İI]TH\\.?|[İI]HR\\.?|[İI]THALAT|[İI]HRACAT|PAZ\\.?|PAZARLAMA|DIŞ|[İI]Ç|NAK\\.?|[İI]NŞ\\.?|TAAH\\.?|TURZ\\.?|SANAY[İI][İI])\\b/i;
+function adBicimle(ad, rozet) {
+  const m = EK.exec(ad);
+  if (m && m.index > 0) {
+    const asil = ad.slice(0, m.index).trim();
+    // en az iki kelime kalsın, yoksa bölme
+    if (asil.split(/\s+/).length >= 2 || asil.length >= 9) {
+      return escH(asil) + (rozet || '') + '<span class="unvan-ek">' + escH(ad.slice(m.index)) + '</span>';
+    }
+  }
+  return escH(ad) + (rozet || '');
+}
 const escH = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 function render() {
@@ -562,9 +589,10 @@ function render() {
       ? (r.m ? '<a href="' + escH(r.m) + '" target="_blank" rel="noopener">' + escH(r.d) + '</a>' : escH(r.d)) +
         (r.gr !== '' ? '<span class="rate">★ ' + escH(r.gr) + '</span>' : '')
       : '—';
-    return '<tr><td>' + escH(r.n) + (r.r ? ' <span class="rep-badge">temsilci</span>' : '') +
+    const rozetler = (r.r ? ' <span class="rep-badge">temsilci</span>' : '') +
       (r.v === 'kesin' ? ' <span class="v-badge ok" title="Google Maps kaydı telefon/web/adres ile doğrulandı">✓</span>' :
-       r.v === 'olasi' ? ' <span class="v-badge mid" title="Google Maps kaydı ad benzerliğiyle eşleşti">~</span>' : '') +
+       r.v === 'olasi' ? ' <span class="v-badge mid" title="Google Maps kaydı ad benzerliğiyle eşleşti">~</span>' : '');
+    return '<tr><td>' + adBicimle(r.n, rozetler) +
       '</td><td data-l="Ülke">' + escH(r.c) +
       '</td><td class="num" data-l="Salon / Stant">' + escH(r.s) + ' / ' + escH(r.t) +
       '</td><td class="cat-cell" data-l="Kategoriler">' + escH(r.k || '—') +
