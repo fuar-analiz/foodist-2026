@@ -2,6 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const rows = JSON.parse(fs.readFileSync(path.join(__dirname, 'foodist-data.json'), 'utf8'));
 
+// --- Unicode normalizasyonu ---
+// Kaynak veride "Nilüfer" yerine "Ni" + i + U+0307 (birleşik nokta) gibi bozukluklar var:
+// İ (U+0130) Türkçe olmayan bir locale ile küçültülünce i + U+0307'ye dönüşüyor.
+// Bu, ilçe sayımını ikiye böler, aramayı bozar ve Excel'e sızar.
+// NFC'ye çevirip artakalan birleşik işaretleri atıyoruz (Türkçe NFC'de birleşik işaret kullanmaz).
+const nfc = s => typeof s === 'string' ? s.normalize('NFC').replace(/[̀-ͯ]/g, '') : s;
+rows.forEach(r => { for (const k in r) r[k] = nfc(r[k]); });
+
 const N = rows.length;
 const tr = rows.filter(r => r.country === 'Türkiye');
 const fo = rows.filter(r => r.country && r.country !== 'Türkiye');
@@ -189,33 +197,39 @@ const cmpRows = [
         </div>
       </div>`).join('');
 
-const html = `<title>Foodist İstanbul 2026 — Katılımcı Analizi</title>
+const html = `<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Foodist İstanbul 2026 — Katılımcı Analizi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Foodist İstanbul 2026 fuarının 588 katılımcı firmasının doğrulanmış iletişim, konum ve kategori analizi.">
 <style>
   :root {
     --bg: #faf8f5; --surface: #ffffff; --ink: #1c1917; --ink-2: #57534e; --ink-3: #8a8378;
     --accent: #a63d2f; --line: #e7e0d8; --track: #efe9e1; --track-2: #ded4c7;
-    --s1: #2a78d6; --s2: #eb6834; --good: #008300; --warn: #b06f00;
+    --s1: #2a78d6; --s2: #eb6834; --good: #007a2e; --warn: #b06f00; --on-accent: #fff; --on-good: #fff;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #171412; --surface: #1f1c19; --ink: #f2efe9; --ink-2: #b8b2a7; --ink-3: #77716a;
+      --bg: #171412; --surface: #1f1c19; --ink: #f2efe9; --ink-2: #b8b2a7; --ink-3: #9c948a;
       --accent: #e0765f; --line: #35302a; --track: #2a2622; --track-2: #433c33;
-      --s1: #3987e5; --s2: #d95926; --good: #35a35a; --warn: #c98500;
+      --s1: #3987e5; --s2: #d95926; --good: #4cb872; --warn: #c98500; --on-accent: #2a1512; --on-good: #10240f;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #171412; --surface: #1f1c19; --ink: #f2efe9; --ink-2: #b8b2a7; --ink-3: #77716a;
+    --bg: #171412; --surface: #1f1c19; --ink: #f2efe9; --ink-2: #b8b2a7; --ink-3: #9c948a;
     --accent: #e0765f; --line: #35302a; --track: #2a2622; --track-2: #433c33;
-    --s1: #3987e5; --s2: #d95926; --good: #35a35a; --warn: #c98500;
+    --s1: #3987e5; --s2: #d95926; --good: #4cb872; --warn: #c98500; --on-accent: #2a1512; --on-good: #10240f;
     color-scheme: dark;
   }
   :root[data-theme="light"] {
     --bg: #faf8f5; --surface: #ffffff; --ink: #1c1917; --ink-2: #57534e; --ink-3: #8a8378;
     --accent: #a63d2f; --line: #e7e0d8; --track: #efe9e1; --track-2: #ded4c7;
-    --s1: #2a78d6; --s2: #eb6834; --good: #008300; --warn: #b06f00;
+    --s1: #2a78d6; --s2: #eb6834; --good: #007a2e; --warn: #b06f00; --on-accent: #fff; --on-good: #fff;
     color-scheme: light;
   }
   * { box-sizing: border-box; }
@@ -289,18 +303,18 @@ const html = `<title>Foodist İstanbul 2026 — Katılımcı Analizi</title>
   .toolbar input { flex: 1 1 260px; padding: 10px 14px; font: inherit; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
   .toolbar input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   .toolbar button { font: inherit; font-size: 13.5px; padding: 9px 14px; background: var(--surface); color: var(--ink-2); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
-  .toolbar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .toolbar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .toolbar button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   .count-note { font-size: 13px; color: var(--ink-3); margin: 0; }
   .count-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .copy-btn { font: inherit; font-size: 13px; padding: 6px 12px; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 7px; cursor: pointer; }
+  .copy-btn { font: inherit; font-size: 13.5px; padding: 10px 14px; min-height: 42px; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 7px; cursor: pointer; }
   .copy-btn:hover { background: var(--accent); color: #fff; }
   .copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .mail-cell a { display: block; }
   .new-tag { display: inline-block; font-size: 10px; font-weight: 700; color: var(--good); border: 1px solid currentColor; border-radius: 999px; padding: 0 5px; margin-left: 5px; vertical-align: 1px; white-space: nowrap; }
   .new-val { color: var(--ink); }
   .v-badge { display: inline-block; font-size: 11px; font-weight: 700; width: 15px; height: 15px; line-height: 14px; text-align: center; border-radius: 50%; vertical-align: 1px; }
-  .v-badge.ok { color: #fff; background: var(--good); }
+  .v-badge.ok { color: var(--on-good); background: var(--good); }
   .v-badge.mid { color: var(--ink); background: var(--track-2); }
   .loc-cell { white-space: nowrap; }
   .rate { font-size: 11.5px; color: var(--ink-3); margin-left: 6px; font-variant-numeric: tabular-nums; }
@@ -308,7 +322,7 @@ const html = `<title>Foodist İstanbul 2026 — Katılımcı Analizi</title>
   .tbl-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
   table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13.5px; }
   th { text-align: left; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); padding: 12px 14px 8px; border-bottom: 2px solid var(--line); position: sticky; top: 0; background: var(--surface); }
-  td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
   tr:last-child td { border-bottom: 0; }
   td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
   .rep-badge { font-size: 10.5px; font-weight: 700; color: var(--s1); border: 1px solid currentColor; border-radius: 999px; padding: 0 6px; white-space: nowrap; }
@@ -319,11 +333,11 @@ const html = `<title>Foodist İstanbul 2026 — Katılımcı Analizi</title>
   footer p { margin: 4px 0; max-width: 80ch; }
 
   .act-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-  .copy-btn.primary { background: var(--accent); color: #fff; font-weight: 600; }
+  .copy-btn.primary { background: var(--accent); color: var(--on-accent); font-weight: 600; }
   .copy-btn.primary:hover { filter: brightness(1.1); }
 
   /* ---- MOBİL: tabloyu karta çevir, yatay kaydırma yok ---- */
-  @media (max-width: 720px) {
+  @media (max-width: 900px) {
     .wrap { padding: 28px 16px 56px; }
     .tiles { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 8px; }
     .tile { padding: 12px 14px; }
@@ -358,6 +372,8 @@ const html = `<title>Foodist İstanbul 2026 — Katılımcı Analizi</title>
     tbody td:first-child::before { content: none; }
     .loc-cell { white-space: normal; }
     .mail-cell a { word-break: break-all; }
+    tbody td a { display: inline-block; padding: 6px 0; min-height: 22px; }
+    .mail-cell a { padding: 5px 0; }
   }
   @media (max-width: 380px) {
     .act-btns { grid-template-columns: 1fr; }
@@ -604,6 +620,8 @@ Object.entries(btns).forEach(([k, b]) => b.addEventListener('click', () => {
 }));
 render();
 </script>
+</body>
+</html>
 `;
 
 fs.writeFileSync(path.join(__dirname, 'index.html'), html, 'utf8');
@@ -612,14 +630,18 @@ console.log('yazıldı: index.html,', Math.round(Buffer.byteLength(html, 'utf8')
 // --- Kimlik sızıntısı denetimi: sayfada kişisel/kurumsal ad geçmemeli ---
 // Denetim listesi base64 ile saklanır ki listenin kendisi sızıntı sayılmasın.
 const YASAK = new RegExp(
-  Buffer.from('dGFzYXJpbW1hbmlhfHRhc2FyxLFtbWFuaWF8aWhzYW58ZXN0ZXRvdWNofGFudGhyb3BpY3xjbGF1ZGU=', 'base64').toString('utf8'),
-  'gi');
-const sizinti = html.match(YASAK);
+  Buffer.from('dGFzYXJpbW1hbmlhfHRhc2FyxLFtbWFuaWF8aWhzYW58ZXN0ZXRvdWNofGFudGhyb3BpY3xjbGF1ZGU=', 'base64').toString('utf8')
+    // JS'in /i bayrağı İ(U+0130) ile i'yi eşleştirmez; metni önce ASCII'ye indiriyoruz
+    , 'gi');
+const asciiLower = t => t.replace(/[İIı]/g, 'i').replace(/[şŞ]/g, 's').replace(/[ğĞ]/g, 'g')
+  .replace(/[üÜ]/g, 'u').replace(/[öÖ]/g, 'o').replace(/[çÇ]/g, 'c').toLowerCase();
+// "İhsan Dede Caddesi" (Gebze/Konya OSB sokak adı) katılımcı adreslerinde geçer — kimlik değil.
+const sizinti = asciiLower(html).replace(/ihsan\s?dede/g, '(sokak)').match(YASAK);
 if (sizinti) { console.error('!! KİMLİK SIZINTISI:', [...new Set(sizinti)].join(', ')); process.exitCode = 1; }
 else console.log('✓ kimlik sızıntısı yok');
 
 // --- Kodlama denetimi: bozuk Türkçe karakter kalıbı ---
-const BOZUK = /Ã[§¶¼]|Å|Ä[±]|â€|ï»¿|�|ı̇|İ̇/g;
+const BOZUK = new RegExp("\u00C3[\u00A7\u00B6\u00BC]|\u00C5|\u00C4\u00B1|\u00E2\u20AC|\uFEFF|\uFFFD|[\u0300-\u036F]", "g");
 const bozuk = html.match(BOZUK);
 if (bozuk) { console.error('!! KODLAMA HATASI:', [...new Set(bozuk)].slice(0, 8).map(x => JSON.stringify(x)).join(' ')); process.exitCode = 1; }
 else console.log('✓ kodlama temiz (UTF-8, birleşik nokta yok)');
