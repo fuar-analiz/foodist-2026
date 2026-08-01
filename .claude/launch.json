@@ -1,6 +1,0 @@
-{
-  "version": "0.0.1",
-  "configurations": [
-    { "name": "foodist", "runtimeExecutable": "node", "runtimeArgs": ["server.js"], "port": 7995 }
-  ]
-}
