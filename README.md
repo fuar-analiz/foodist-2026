@@ -40,11 +40,11 @@ Google Maps verisi işletmelerin kendi beyanına dayanır ve güncel olmayabilir
 
 | Dosya | Ne işe yarar |
 |---|---|
-|  | Raporun tamamı (bağımsız, 279 KB) |
-|  | Excel dışa aktarımının 29 sütunluk tam verisi — yalnızca butona basılınca inar |
-|  | Kaynak veri |
-|  | Derleyici |
-|  | Tarayıcıda bağımlılıksız .xlsx üretici |
+| `index.html` | Raporun tamamı — tek dosya, dış bağımlılık yok (279 KB) |
+| `veri-export.json` | Excel çıktısının 29 sütunluk tam verisi; yalnızca **Excel'e aktar**'a basılınca indirilir |
+| `foodist-data.json` | Kaynak veri |
+| `build.js` | Derleyici — kodlama ve kimlik denetimlerini de çalıştırır |
+| `xlsx-writer.js` | Tarayıcıda bağımlılıksız `.xlsx` üretici (ZIP + OOXML) |
 
 ## Geliştirme
 
