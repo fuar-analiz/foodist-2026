@@ -273,11 +273,36 @@
     .marka:hover { transform: scale(1.02); opacity: .92; }
   }
 
+  /* ---- Dokunmatik: hover yok, yerine orta-bant vurgusu + dokunma tepkisi ---- */
+  .tile.odakta, .vcard.odakta {
+    transform: translateY(-2px);
+    box-shadow: var(--golge-uzeri);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  }
+  .insight.odakta {
+    transform: translateY(-2px);
+    box-shadow: inset 3px 0 0 var(--accent), var(--golge-uzeri);
+    border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+    background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+  }
+  .insight.odakta b { color: var(--accent); }
+
+  /* Dokunma anında bastırma tepkisi (fare için de geçerli) */
+  .tile:active, .insight:active, .vcard:active {
+    transform: translateY(0) scale(.985);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,.14), var(--golge);
+    transition-duration: .07s;
+  }
+  /* Mavi dokunma parıltısını kapat, kendi tepkimizi kullanıyoruz */
+  .tile, .insight, .vcard, .chip, .copy-btn, .fab { -webkit-tap-highlight-color: transparent; }
+
   /* Hareket azaltma tercihinde yalnızca renk değişsin, hiçbir şey kıpırdamasın */
   @media (prefers-reduced-motion: reduce) {
     .tile, .insight, .vcard, .card, .chip, .copy-btn, .fab, .marka, .bar-row, .cmp-row { transition: none; }
     .tile:hover, .insight:hover, .vcard:hover, .chip:hover,
-    .copy-btn:hover, .fab.gorunur:hover, .marka:hover { transform: none; }
+    .copy-btn:hover, .fab.gorunur:hover, .marka:hover,
+    .tile.odakta, .insight.odakta, .vcard.odakta,
+    .tile:active, .insight:active, .vcard:active { transform: none; }
   }
 
   footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
@@ -1355,6 +1380,53 @@ xlsBtn.addEventListener('click', async () => {
   });
 
   guncelle();
+})();
+
+// --- Dokunmatikte kutu vurgusu ---
+// Fare varsa gerek yok (hover zaten var). Dokunmatikte ekranın orta bandındaki
+// kutular vurgulanır; sayfayı kaydırdıkça kutular sırayla canlanır.
+(function () {
+  const fareVar = window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (fareVar) return;
+
+  const kutular = [...document.querySelectorAll('.tile, .insight, .vcard')];
+  if (!kutular.length) return;
+
+  let sonSet = new Set();
+  function vurgula() {
+    const h = innerHeight, ekranMerkezi = h * 0.46;   // gözün doğal durduğu yer
+    // Ekran merkezine EN YAKIN kutuyu bul; sabit bir bant kullanmak hem
+    // ızgaradaki iki satırı birden yakıyor hem de aralarda boşluk bırakıyordu.
+    let enIyi = null, enYakin = Infinity;
+    const gorunen = [];
+    for (const k of kutular) {
+      const r = k.getBoundingClientRect();
+      if (r.bottom < 8 || r.top > h - 8) continue;      // ekran dışı
+      const merkez = r.top + r.height / 2;
+      const uzaklik = Math.abs(merkez - ekranMerkezi);
+      gorunen.push({ k, merkez, uzaklik });
+      if (uzaklik < enYakin) { enYakin = uzaklik; enIyi = merkez; }
+    }
+    const yeniSet = new Set();
+    if (enIyi !== null) {
+      // Kazananla aynı satırdakiler de yansın (özet kutuları 2 sütunlu ızgara)
+      for (const g of gorunen) if (Math.abs(g.merkez - enIyi) < 24) yeniSet.add(g.k);
+    }
+    if (yeniSet.size === sonSet.size && [...yeniSet].every(k => sonSet.has(k))) return;
+    sonSet.forEach(k => { if (!yeniSet.has(k)) k.classList.remove('odakta'); });
+    yeniSet.forEach(k => { if (!sonSet.has(k)) k.classList.add('odakta'); });
+    sonSet = yeniSet;
+  }
+
+  let son = 0, zaman = null;
+  function kisili() {
+    const simdi = Date.now();
+    if (simdi - son > 90) { son = simdi; vurgula(); }
+    else { clearTimeout(zaman); zaman = setTimeout(vurgula, 90); }
+  }
+  addEventListener('scroll', kisili, { passive: true });
+  addEventListener('resize', kisili, { passive: true });
+  vurgula();
 })();
 
 // Her tuş vuruşunda 588 satırlık DOM'u yeniden kurmak mobilde takılmaya yol açıyordu.
