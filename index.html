@@ -11,27 +11,27 @@
   :root {
     --bg: #faf8f5; --surface: #ffffff; --ink: #1c1917; --ink-2: #57534e; --ink-3: #6f6a62;
     --accent: #a63d2f; --line: #e7e0d8; --track: #efe9e1; --track-2: #ded4c7;
-    --s1: #2a78d6; --s2: #eb6834; --good: #007a2e; --warn: #b06f00; --on-accent: #fff; --on-good: #fff; --rozet: #1a5fb4;
+    --s1: #2a78d6; --s2: #eb6834; --good: #007a2e; --warn: #b06f00; --on-accent: #fff; --on-good: #fff; --rozet: #1a5fb4; --golge: 0 2px 4px rgba(28,25,23,.05); --golge-uzeri: 0 6px 18px rgba(28,25,23,.11); --vurgu-zemin: rgba(166,61,47,.045);
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #171412; --surface: #1f1c19; --ink: #f2efe9; --ink-2: #b8b2a7; --ink-3: #9c948a;
       --accent: #e0765f; --line: #35302a; --track: #2a2622; --track-2: #433c33;
-      --s1: #3987e5; --s2: #d95926; --good: #4cb872; --warn: #c98500; --on-accent: #2a1512; --on-good: #10240f; --rozet: #6aa9ee;
+      --s1: #3987e5; --s2: #d95926; --good: #4cb872; --warn: #c98500; --on-accent: #2a1512; --on-good: #10240f; --rozet: #6aa9ee; --golge: 0 2px 4px rgba(0,0,0,.28); --golge-uzeri: 0 8px 22px rgba(0,0,0,.42); --vurgu-zemin: rgba(224,118,95,.07);
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
     --bg: #171412; --surface: #1f1c19; --ink: #f2efe9; --ink-2: #b8b2a7; --ink-3: #9c948a;
     --accent: #e0765f; --line: #35302a; --track: #2a2622; --track-2: #433c33;
-    --s1: #3987e5; --s2: #d95926; --good: #4cb872; --warn: #c98500; --on-accent: #2a1512; --on-good: #10240f; --rozet: #6aa9ee;
+    --s1: #3987e5; --s2: #d95926; --good: #4cb872; --warn: #c98500; --on-accent: #2a1512; --on-good: #10240f; --rozet: #6aa9ee; --golge: 0 2px 4px rgba(0,0,0,.28); --golge-uzeri: 0 8px 22px rgba(0,0,0,.42); --vurgu-zemin: rgba(224,118,95,.07);
     color-scheme: dark;
   }
   :root[data-theme="light"] {
     --bg: #faf8f5; --surface: #ffffff; --ink: #1c1917; --ink-2: #57534e; --ink-3: #6f6a62;
     --accent: #a63d2f; --line: #e7e0d8; --track: #efe9e1; --track-2: #ded4c7;
-    --s1: #2a78d6; --s2: #eb6834; --good: #007a2e; --warn: #b06f00; --on-accent: #fff; --on-good: #fff; --rozet: #1a5fb4;
+    --s1: #2a78d6; --s2: #eb6834; --good: #007a2e; --warn: #b06f00; --on-accent: #fff; --on-good: #fff; --rozet: #1a5fb4; --golge: 0 2px 4px rgba(28,25,23,.05); --golge-uzeri: 0 6px 18px rgba(28,25,23,.11); --vurgu-zemin: rgba(166,61,47,.045);
     color-scheme: light;
   }
 
@@ -69,7 +69,7 @@
   @media (min-width: 1100px) { .logo { width: 272px; } }
 
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 0 0 44px; }
-  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .tile { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; box-shadow: var(--golge); }
   .tile b { display: block; font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
   .tile span { font-size: 13px; color: var(--ink-2); }
   .tile.accent { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
@@ -103,7 +103,7 @@
 
   .sub-h { font-size: 15px; font-weight: 700; margin: 26px 0 8px; }
   .verify-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
-  .vcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; border-top: 3px solid var(--line); }
+  .vcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; border-top: 3px solid var(--line); box-shadow: var(--golge); }
   .vcard.ok { border-top-color: var(--good); }
   .vcard.mid { border-top-color: var(--warn); }
   .vcard.off { border-top-color: var(--ink-3); }
@@ -119,8 +119,8 @@
   .bar-fill.s3solid { background: var(--track-2); }
   .gain { font-size: 11px; font-weight: 700; color: var(--good); margin-left: 5px; }
   .insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-  .insight { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 18px; font-size: 14.5px; }
-  .insight b { display: block; margin-bottom: 3px; }
+  .insight { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 18px; font-size: 14.5px; box-shadow: var(--golge); }
+  .insight b { display: block; margin-bottom: 3px; transition: color .18s ease; }
   .insight span { color: var(--ink-2); }
 
   /* 588 satırlık listede gezerken arama ve filtreler hep erişilebilir kalsın */
@@ -219,6 +219,58 @@
   @media (prefers-reduced-motion: reduce) {
     .fab, .chip { transition: none; }
     html { scroll-behavior: auto !important; }
+  }
+
+  /* ---- Hover dili ----
+     Yalnızca gerçek işaretçide çalışır: dokunmatik cihazlarda bir karta dokununca
+     hover durumu üzerinde "takılı" kalır, bu yüzden (hover: hover) ile kapatıldı. */
+  .tile, .insight, .vcard, .card {
+    transition: transform .18s cubic-bezier(.2,.7,.3,1),
+                box-shadow .18s ease,
+                border-color .18s ease,
+                background-color .18s ease;
+    will-change: auto;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .tile:hover, .vcard:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--golge-uzeri);
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    }
+    /* Öne çıkan kartlar: soldaki vurgu şeridi kalınlaşsın (düzen kaymasın diye
+       border yerine iç gölge ile) */
+    .insight:hover {
+      transform: translateY(-2px);
+      box-shadow: inset 2px 0 0 var(--accent), var(--golge-uzeri);
+      border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+      background: color-mix(in srgb, var(--accent) 3%, var(--surface));
+    }
+    .insight:hover b { color: var(--accent); }
+    .card:hover { box-shadow: var(--golge); }
+
+    /* Grafik satırları: fare hangi satırdaysa o okunsun */
+    .bar-row { transition: background-color .15s ease; border-radius: 6px; }
+    .bar-row:hover { background: var(--vurgu-zemin); }
+    .bar-row:hover .bar-label { color: var(--ink); }
+    .cmp-row { transition: background-color .15s ease; border-radius: 6px; }
+    .cmp-row:hover { background: var(--vurgu-zemin); }
+
+    /* Menü etiketleri ve butonlar biraz daha canlı */
+    .chip { transition: background .15s, color .15s, border-color .15s, transform .15s; }
+    .chip:hover { transform: translateY(-1px); }
+    .copy-btn { transition: background .15s, color .15s, box-shadow .15s, transform .15s; }
+    .copy-btn:hover { transform: translateY(-1px); box-shadow: var(--golge); }
+    .fab { transition: opacity .2s, transform .2s, visibility .2s, box-shadow .2s; }
+    .fab.gorunur:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.36); }
+    .marka { transition: transform .2s cubic-bezier(.2,.7,.3,1), opacity .2s; }
+    .marka:hover { transform: scale(1.02); opacity: .92; }
+  }
+
+  /* Hareket azaltma tercihinde yalnızca renk değişsin, hiçbir şey kıpırdamasın */
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .insight, .vcard, .card, .chip, .copy-btn, .fab, .marka, .bar-row, .cmp-row { transition: none; }
+    .tile:hover, .insight:hover, .vcard:hover, .chip:hover,
+    .copy-btn:hover, .fab.gorunur:hover, .marka:hover { transform: none; }
   }
 
   footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
