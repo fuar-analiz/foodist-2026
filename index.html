@@ -34,6 +34,7 @@
     color-scheme: light;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
     font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -100,7 +101,13 @@
   .insight b { display: block; margin-bottom: 3px; }
   .insight span { color: var(--ink-2); }
 
-  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  /* 588 satırlık listede gezerken arama ve filtreler hep erişilebilir kalsın */
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
+    position: sticky; top: 56px; z-index: 40; padding: 10px 0;
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    backdrop-filter: blur(8px);
+  }
   .toolbar input { flex: 1 1 260px; padding: 10px 14px; font: inherit; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
   .toolbar input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   .toolbar button { font: inherit; font-size: 13.5px; padding: 9px 14px; background: var(--surface); color: var(--ink-2); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
@@ -145,6 +152,53 @@
   td:first-child { font-weight: 650; color: var(--ink); line-height: 1.42; letter-spacing: -0.005em; }
   .unvan-ek { display: block; font-weight: 400; font-size: 11.5px; color: var(--ink-3); letter-spacing: .01em; margin-top: 1px; }
 
+  /* --- Yapışkan bölüm menüsü --- */
+  .topnav {
+    position: sticky; top: 0; z-index: 60;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: saturate(1.5) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topnav-in {
+    max-width: 1340px; margin: 0 auto; padding: 8px 16px;
+    display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity;
+  }
+  .topnav-in::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: 0 0 auto; scroll-snap-align: start;
+    font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap;
+    color: var(--ink-2); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 8px 13px; min-height: 36px; display: inline-flex; align-items: center;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .chip.aktif { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+  /* --- Başa dön --- */
+  .fab {
+    position: fixed; right: 16px; bottom: 16px; z-index: 70;
+    width: 50px; height: 50px; border-radius: 50%;
+    font-size: 21px; line-height: 1; cursor: pointer;
+    background: var(--accent); color: var(--on-accent); border: 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,.28);
+    opacity: 0; visibility: hidden; transform: translateY(10px);
+    transition: opacity .2s, transform .2s, visibility .2s;
+  }
+  .fab.gorunur { opacity: 1; visibility: visible; transform: none; }
+  .fab:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+  /* Bölüm başlıkları menünün altında kalmasın */
+  section[id], #ust { scroll-margin-top: 62px; }
+  th { top: 53px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fab, .chip { transition: none; }
+    html { scroll-behavior: auto !important; }
+  }
+
   footer { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
   footer p { margin: 4px 0; max-width: 80ch; }
 
@@ -187,6 +241,15 @@
     }
     tbody td:first-child::before { content: none; }
     .loc-cell { white-space: normal; }
+    /* Firma listesinde gezerken arama ve filtreler hep elin altında olsun */
+    /* Menünün tam altına otur; sayaç yapışkan DEĞİL — değişken yükseklikli iki
+       yapışkan katman üst üste biniyordu. */
+    .toolbar {
+      top: 56px; margin: 0 -16px 10px; padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .count-line { position: static; }
+    .fab { right: 14px; bottom: 14px; }
     tbody td { overflow-wrap: anywhere; }
     table, tbody td, thead th { width: auto; min-width: 0; table-layout: auto; }
     .mail-cell a { word-break: break-all; }
@@ -200,7 +263,23 @@
   }
 </style>
 
-<div class="wrap">
+<nav class="topnav" id="topnav" aria-label="Bölümler">
+  <div class="topnav-in">
+    <a class="chip" href="#ust">Özet</a>
+    <a class="chip" href="#s-rehber">Firma listesi</a>
+    <a class="chip" href="#s-kategori">Kategoriler</a>
+    <a class="chip" href="#s-salon">Salonlar</a>
+    <a class="chip" href="#s-ulke">Ülkeler</a>
+    <a class="chip" href="#s-dogrulama">Doğrulama</a>
+    <a class="chip" href="#s-ilce">İlçeler</a>
+    <a class="chip" href="#s-eposta">E-posta</a>
+    <a class="chip" href="#s-veri">Veri</a>
+    <a class="chip" href="#s-bulgular">Bulgular</a>
+  </div>
+</nav>
+<button id="ustBtn" class="fab" aria-label="Sayfa başına dön" title="Başa dön">↑</button>
+
+<div class="wrap" id="ust">
   <header>
     <p class="eyebrow">Fuar Analizi · TÜYAP Beylikdüzü · 1–4 Eylül 2026</p>
     <h1>Foodist İstanbul 2026 — Katılımcı Analizi</h1>
@@ -215,7 +294,7 @@
     <div class="tile accent"><b>323</b><span>e-posta bulunan firma</span></div>
   </div>
 
-  <section>
+  <section id="s-kategori">
     <h2>Ürün kategorileri</h2>
     <p class="sub">Firma adı, tanıtım metni ve ürün vitrinindeki anahtar kelimelere göre sınıflandırma — bir firma birden fazla kategoriye girebilir. 227 firma (%39) yalnızca jenerik ad kullandığı için sınıflanamadı.</p>
     <div class="card">
@@ -297,7 +376,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-salon">
     <h2>Salon dağılımı</h2>
     <p class="sub">Ağırlık 7, 8 ve 3 numaralı salonlarda. Salon 10 fiilen Çin pavyonu olarak çalışıyor: 57 firmanın en az 39'u Çinli üretici ve ihracatçı.</p>
     <div class="card">
@@ -364,7 +443,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-ulke">
     <h2>Ülkeler</h2>
     <p class="sub">Katılımın %89'u Türkiye'den (521 firma). 67 yabancı katılımcının dağılımı aşağıda — Çin tek başına yabancı katılımın yarısından fazlası.</p>
     <div class="card">
@@ -466,7 +545,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-dogrulama">
     <h2>Google Maps ile doğrulama</h2>
     <p class="sub">Her katılımcı Google Maps'te aranıp kaydıyla eşleştirildi. Eşleşme yalnızca ad benzerliğine bırakılmadı: telefon, web alan adı veya adres teyidi arandı; teyitsiz zayıf eşleşmeler (135) tamamen elendi — "Akuz Otomotiv" gibi benzer adlı yanlış işletmeleri almamak için.</p>
     <div class="verify-grid">
@@ -521,7 +600,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-ilce">
     <h2>Katılımcılar nerede? — ilçe dağılımı</h2>
     <p class="sub">Google Maps kaydı doğrulanan firmaların bulunduğu ilk 12 ilçe. Bu bilgi fuar rehberinde hiç yoktu; adresler serbest metindi.</p>
     <div class="card">
@@ -588,7 +667,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-eposta">
     <h2>E-posta çıkarımı — kategori bazında</h2>
     <p class="sub">Fuar rehberinde e-posta alanı yok. Bu yüzden katılımcıların kendi web sitelerinin anasayfası ve iletişim sayfası tarandı: rehberde sitesi kayıtlı 455 firmanın <b>323'inde</b> geçerli e-posta bulundu (toplam 476 adres). Koyu bant e-postası bulunanı, açık bant kategorideki toplam firmayı gösterir.</p>
     <div class="card">
@@ -715,7 +794,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-veri">
     <h2>Profil verisi ne kadar dolu?</h2>
     <p class="sub">Yabancı katılımcılar fuar profillerini Türk firmalardan belirgin biçimde daha eksiksiz doldurmuş — telefonda fark %22 puan.</p>
     <div class="card">
@@ -772,7 +851,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-bulgular">
     <h2>Öne çıkanlar</h2>
     <div class="insights">
       <div class="insight"><b>Şekerleme ve kuruyemiş öne çıkıyor</b><span>En kalabalık iki kategori Şekerleme &amp; Çikolata (115) ile Kuruyemiş &amp; Kuru Meyve (102) — fuarın ihracat odağını yansıtıyor.</span></div>
@@ -785,7 +864,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="s-rehber">
     <h2>Katılımcı rehberi</h2>
     <p class="sub">Tüm liste — firma adı, kategori, ülke, ilçe veya e-postaya göre arayın. Filtreleyip <b>görünen e-postaları tek tuşla kopyalayabilirsiniz</b>. <span class="new-tag">Maps</span> etiketi o bilginin fuar rehberinde olmayıp Google Maps'ten geldiğini, ✓ ise kaydın doğrulandığını gösterir.</p>
     <div class="toolbar">
@@ -1097,6 +1176,77 @@ xlsBtn.addEventListener('click', () => {
   }
   setTimeout(() => { xlsBtn.textContent = label; }, 2500);
 });
+
+// --- Bölüm menüsü: aktif bölümü işaretle, başa dön butonunu göster/gizle ---
+// Not: requestAnimationFrame ve IntersectionObserver'a BAĞLI DEĞİL. Bazı gömülü
+// tarayıcılarda kare üretilmediğinde ikisi de çalışmaz; bu yüzden konum hesabı
+// doğrudan scroll olayında, zaman damgasıyla kısılarak yapılıyor.
+(function () {
+  const nav = document.getElementById('topnav');
+  const kap = nav.querySelector('.topnav-in');
+  const fab = document.getElementById('ustBtn');
+  const chips = [...nav.querySelectorAll('.chip')];
+  const hedefler = chips
+    .map(c => ({ chip: c, el: document.querySelector(c.getAttribute('href')) }))
+    .filter(x => x.el)
+    .sort((a, b) => (a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1);
+
+  let sonAktif = null;
+  function guncelle() {
+    // Başa dön butonu
+    const asagida = (window.pageYOffset || document.documentElement.scrollTop || 0) > 700;
+    fab.classList.toggle('gorunur', asagida);
+
+    // Menü şeridinin hemen altındaki bölümü aktif say
+    const esik = 90;
+    let aktif = null;
+    for (const h of hedefler) {
+      if (h.el.getBoundingClientRect().top <= esik) aktif = h;
+    }
+    if (!aktif) aktif = hedefler[0];
+    if (!aktif || aktif.chip === sonAktif) return;
+    sonAktif = aktif.chip;
+    chips.forEach(c => c.classList.toggle('aktif', c === aktif.chip));
+    // aktif etiketi görünür alana getir
+    const hedefSol = aktif.chip.offsetLeft - kap.clientWidth / 2 + aktif.chip.offsetWidth / 2;
+    kap.scrollLeft = Math.max(0, hedefSol);
+  }
+
+  let son = 0, zamanlayici = null;
+  function kisili() {
+    const simdi = Date.now();
+    if (simdi - son > 120) { son = simdi; guncelle(); }
+    else { clearTimeout(zamanlayici); zamanlayici = setTimeout(guncelle, 120); }
+  }
+  addEventListener('scroll', kisili, { passive: true });
+  addEventListener('resize', kisili, { passive: true });
+
+  fab.addEventListener('click', function () {
+    const azalt = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const basla = window.pageYOffset || 0;
+    try { scrollTo({ top: 0, behavior: azalt ? 'auto' : 'smooth' }); }
+    catch (e) { scrollTo(0, 0); }
+    // Bazı gömülü tarayıcılarda yumuşak kaydırma hiç ilerlemez; 350ms sonra
+    // hâlâ kıpırdamadıysa anında başa al.
+    setTimeout(function () {
+      const simdi = window.pageYOffset || 0;
+      if (simdi > 0 && simdi >= basla - 4) {
+        // CSS'teki scroll-behavior:smooth düz scrollTo'yu da yumuşak yapar;
+        // ilerlemediği ortamlarda kilitlenmemek için geçici olarak kapat.
+        // Not: iki argümanlı scrollTo(0,0) bazı gömülü tarayıcılarda sessizce
+        // yok sayılıyor; seçenek biçimi + behavior:'instant' her yerde çalışıyor.
+        try { scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+        catch (e) { try { scrollTo({ top: 0, behavior: 'auto' }); } catch (e2) { scrollTo(0, 0); } }
+        guncelle();
+      }
+    }, 350);
+    const kutu = document.getElementById('q');
+    if (kutu) kutu.blur();
+    guncelle();
+  });
+
+  guncelle();
+})();
 
 q.addEventListener('input', render);
 Object.entries(btns).forEach(([k, b]) => b.addEventListener('click', () => {
