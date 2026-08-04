@@ -36,6 +36,16 @@ E-posta adresleri otomatik çıkarılmıştır; gönderim öncesi doğrulanmalı
 
 Google Maps verisi işletmelerin kendi beyanına dayanır ve güncel olmayabilir.
 
+## Dosyalar
+
+| Dosya | Ne işe yarar |
+|---|---|
+|  | Raporun tamamı (bağımsız, 279 KB) |
+|  | Excel dışa aktarımının 29 sütunluk tam verisi — yalnızca butona basılınca inar |
+|  | Kaynak veri |
+|  | Derleyici |
+|  | Tarayıcıda bağımlılıksız .xlsx üretici |
+
 ## Geliştirme
 
 ```bash
