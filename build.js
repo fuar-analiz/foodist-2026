@@ -139,7 +139,7 @@ const catBars = cats.map(([k, v]) => `
 
 const salonBars = salons.map(([k, v]) => `
       <div class="bar-row" title="Salon ${esc(k)}: ${v} firma">
-        <span class="bar-label">Salon ${esc(k)}${k === '10' ? ' <em class="tag-cn">Çin kümesi</em>' : ''}</span>
+        <span class="bar-label">Salon ${esc(k)}${k === '10' ? ' <em class="tag-cn">Çin katılımı</em>' : ''}</span>
         <span class="bar-track"><span class="bar-fill" style="width:${(100 * v / maxSalon).toFixed(1)}%"></span></span>
         <span class="bar-val">${v}</span>
       </div>`).join('');
@@ -623,7 +623,7 @@ const html = `<!doctype html>
 
   <section id="s-salon">
     <h2>Salon dağılımı</h2>
-    <p class="sub">Ağırlık 7, 8 ve 3 numaralı salonlarda. Salon 10 fiilen Çin pavyonu olarak çalışıyor: ${s10.length} firmanın en az ${s10cn}'u Çinli üretici ve ihracatçı.</p>
+    <p class="sub">Ağırlık 7, 8 ve 3 numaralı salonlarda. Salon 10'da Çin katılımı yoğunlaşmış: ${s10.length} firmanın en az ${s10cn}'u Çinli üretici ve ihracatçı.</p>
     <div class="card">${salonBars}
     </div>
   </section>
@@ -695,7 +695,7 @@ const html = `<!doctype html>
     <h2>Öne çıkanlar</h2>
     <div class="insights">
       <div class="insight"><b>Şekerleme ve kuruyemiş öne çıkıyor</b><span>En kalabalık iki kategori Şekerleme &amp; Çikolata (${catCount['Şekerleme & Çikolata']}) ile Kuruyemiş &amp; Kuru Meyve (${catCount['Kuruyemiş & Kuru Meyve']}) — fuarın ihracat odağını yansıtıyor.</span></div>
-      <div class="insight"><b>Salon 10 = Çin pavyonu</b><span>Çinli katılımcıların tamamı Salon 10'da toplanmış; organize ülke pavyonu düzeni. İki Çinli firma sitede yanlışlıkla "Türkiye" etiketli.</span></div>
+      <div class="insight"><b>Çin katılımı Salon 10'da toplanmış</b><span>Çinli katılımcıların tamamı tek salonda; ülke bazlı toplu katılım düzeni. İki Çinli firma sitede yanlışlıkla "Türkiye" etiketli.</span></div>
       <div class="insight"><b>${reps.length} temsilci firma</b><span>Katılımcıların %${Math.round(100 * reps.length / N)}'i standa kendi adına değil, temsilcisi aracılığıyla katılıyor; ${sharedStands} stantta birden fazla firma var.</span></div>
       <div class="insight"><b>${mailli} firmaya doğrudan e-posta</b><span>Katılımcıların kendi sitelerinden ${mailAdet} adres çıkarıldı; bu ${mailli} firmanın <b>tamamında telefon da var</b> — çift kanallı ön temas mümkün.</span></div>
       <div class="insight"><b>İletişim verisi zengin</b><span>${fill.phone[0]} firmanın telefonu, ${fill.web[0]} firmanın web sitesi rehberde açık — B2B ön temas için yeterli altyapı.</span></div>
